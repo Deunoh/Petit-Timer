@@ -22,8 +22,8 @@ Tout fichier statique convient aussi : n'importe quel hébergement, ou un dossie
 
 ## Réglages importants sur l'iPad
 
-- **Verrouillage auto** : *Réglages → Luminosité et affichage → Verrouillage automatique → Jamais*.
-  iOS 15 n'a pas de « Wake Lock », donc sans ça l'écran s'éteint pendant le décompte.
+- **Écran allumé** : iOS 15 n'a pas de « Wake Lock », donc l'app joue une mini vidéo muette en boucle (bibliothèque NoSleep.js, `nosleep.min.js`, licence MIT) tant que le timer tourne.
+  C'est une astuce : si l'écran s'éteint quand même, mettre en plus *Réglages → Luminosité et affichage → Verrouillage automatique → Jamais*, qui est la solution sûre.
   Le temps reste juste même écran éteint (l'heure de fin est mémorisée), mais l'enfant ne voit plus rien.
 - **Son** : le commutateur latéral / le Centre de contrôle ne doit pas être en mode silencieux, sinon la sonnerie de fin ne s'entend pas.
   Le son est débloqué par l'appui sur « Démarrer » : il faut donc toujours lancer le timer depuis l'app.
@@ -45,4 +45,5 @@ Ajouter `?test=10` à l'adresse : chaque timer dure alors 10 secondes.
 ## Fichiers
 
 - `index.html`, `style.css`, `app.js` : l'application
+- `nosleep.min.js` : garde l'écran allumé sur iOS (NoSleep.js v0.12.0, MIT)
 - `manifest.json`, `icon-180.png` : icône et mode plein écran

@@ -134,6 +134,21 @@
     }
   }
 
+  /* ---------- Écran toujours allumé ---------- */
+
+  // iOS 15 n'a pas de Wake Lock : NoSleep.js joue une mini vidéo muette en boucle.
+  // Ça doit démarrer sur un appui (Démarrer / Encore), comme le son.
+  var noSleep = null;
+
+  function keepAwake(on) {
+    if (!window.NoSleep) { return; }
+    try {
+      if (!noSleep) { noSleep = new window.NoSleep(); }
+      var result = on ? noSleep.enable() : noSleep.disable();
+      if (result && result.catch) { result.catch(function () { /* refusé : tant pis */ }); }
+    } catch (e) { /* écran qui pourra s'éteindre */ }
+  }
+
   /* ---------- Boutons à appui long ---------- */
 
   // onTap (facultatif) est appelé si l'appui a été relâché trop tôt.
@@ -249,6 +264,7 @@
 
   function start() {
     unlockAudio();
+    keepAwake(true);
     durationMs = (testSeconds || minutes * 60) * 1000;
     endAt = Date.now() + durationMs;
     warned = false;
@@ -292,6 +308,7 @@
 
   function cancelTimer() {
     window.clearInterval(tickHandle);
+    keepAwake(false);
     phase = 'setup';
     show('setup');
   }
@@ -308,6 +325,7 @@
 
   function backToSetup() {
     stopRinging();
+    keepAwake(false);
     phase = 'setup';
     show('setup');
   }
