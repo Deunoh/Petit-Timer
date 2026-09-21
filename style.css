@@ -1,0 +1,399 @@
+/* Petit Timer : pensé pour Safari iOS 15 (iPad mini 4).
+   Tailles en vmin pour s'adapter au portrait comme au paysage. */
+
+:root {
+  --ink: #5b3a29;
+  --bg1: #fff1d6;
+  --bg2: #ffd9e8;
+  --green: #7bd88f;
+  --blue: #7cc4ff;
+  --pink: #ff9ec4;
+  --yellow: #ffd86b;
+  --orange: #ffb067;
+  --violet: #b9a2ff;
+  --red: #ff8a80;
+  --edge: rgba(91, 58, 41, 0.22);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: linear-gradient(160deg, var(--bg1), var(--bg2));
+  color: var(--ink);
+  font-family: ui-rounded, "SF Pro Rounded", "Avenir Next Rounded", "Arial Rounded MT Bold", "Nunito", -apple-system, "Helvetica Neue", sans-serif;
+  font-weight: 800;
+  touch-action: manipulation;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+h1, h2, p { margin: 0; }
+
+[hidden] { display: none !important; }
+
+/* ---------- Écrans ---------- */
+
+.screen {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3.2vmin;
+  padding: calc(env(safe-area-inset-top) + 3vmin) calc(env(safe-area-inset-right) + 4vmin) calc(env(safe-area-inset-bottom) + 3vmin) calc(env(safe-area-inset-left) + 4vmin);
+  text-align: center;
+}
+
+.screen.active { display: flex; }
+
+h1 { font-size: 7vmin; line-height: 1.1; }
+
+/* ---------- Boutons ---------- */
+
+.btn {
+  position: relative;
+  overflow: hidden;
+  background: var(--yellow);
+  border-radius: 6vmin;
+  box-shadow: 0 1.2vmin 0 var(--edge);
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+
+.btn:active {
+  transform: translateY(1.2vmin);
+  box-shadow: 0 0 0 var(--edge);
+}
+
+.btn.round {
+  border-radius: 50%;
+  width: 20vmin;
+  height: 20vmin;
+  font-size: 9vmin;
+  line-height: 1;
+}
+
+.btn.round small { display: block; font-size: 3.2vmin; margin-top: -0.6vmin; }
+
+.btn.round.small {
+  width: 12vmin;
+  height: 12vmin;
+  font-size: 9vmin;
+  background: var(--violet);
+}
+
+.btn.start {
+  background: var(--green);
+  font-size: 8vmin;
+  padding: 2.4vmin 9vmin;
+}
+
+.btn.start.small { font-size: 5.5vmin; padding: 1.8vmin 6vmin; }
+
+.btn.pause { background: var(--blue); font-size: 6vmin; padding: 2vmin 6vmin; }
+.btn.again { background: var(--pink); font-size: 8vmin; padding: 2.4vmin 9vmin; }
+.btn.cancel { background: var(--red); font-size: 3.8vmin; padding: 2.4vmin 4vmin; color: #fff; }
+
+/* Bouton à appui long : une barre se remplit pendant l'appui */
+.hold::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 100%;
+  width: 0;
+  background: rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+}
+
+.hold.holding::after { animation: holdfill var(--hold-ms, 900ms) linear forwards; }
+
+@keyframes holdfill { to { width: 100%; } }
+
+.gear {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 2vmin);
+  right: calc(env(safe-area-inset-right) + 2vmin);
+  width: 9vmin;
+  height: 9vmin;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  font-size: 5vmin;
+  overflow: hidden;
+  touch-action: none; /* sinon Safari annule l'appui long au moindre mouvement */
+}
+
+.hint {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 3vmin);
+  right: calc(env(safe-area-inset-right) + 13vmin);
+  padding: 1.6vmin 3vmin;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 3vmin;
+  font-size: 3.4vmin;
+}
+
+/* ---------- Écran de réglage ---------- */
+
+.brand {
+  font-size: 12vmin;
+  line-height: 1;
+  color: #e2603c;
+  text-shadow: 0 0.8vmin 0 rgba(91, 58, 41, 0.18);
+}
+
+.mascot { display: inline-block; line-height: 1; }
+.mascot.huge { font-size: 30vmin; animation: dance 1s ease-in-out infinite; }
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 3vmin;
+  width: 72vmin;
+}
+
+.presets .btn:nth-child(6n + 1) { background: var(--yellow); }
+.presets .btn:nth-child(6n + 2) { background: var(--orange); }
+.presets .btn:nth-child(6n + 3) { background: var(--pink); }
+.presets .btn:nth-child(6n + 4) { background: var(--violet); }
+.presets .btn:nth-child(6n + 5) { background: var(--blue); }
+.presets .btn:nth-child(6n + 6) { background: var(--green); }
+
+.presets .btn.selected {
+  outline: 1.2vmin solid var(--ink);
+  outline-offset: 0.4vmin;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 4vmin;
+}
+
+.stepper-value {
+  min-width: 34vmin;
+  font-size: 10vmin;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stepper-value small { font-size: 5vmin; }
+
+/* ---------- Écran de décompte ---------- */
+
+.time {
+  font-size: 25vmin;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.5vmin;
+}
+
+.time.warn { animation: pulse 1s ease-in-out infinite; color: #e2603c; }
+.time.paused { animation: blink 1.2s steps(2, start) infinite; }
+
+.road {
+  display: flex;
+  align-items: center;
+  gap: 2vmin;
+  width: 92vw;
+  max-width: 190vmin;
+}
+
+.home { font-size: 11vmin; line-height: 1; }
+
+.lane {
+  position: relative;
+  flex: 1;
+  margin-right: 5vmin;
+}
+
+.track {
+  height: 10vmin;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 5vmin;
+  box-shadow: inset 0 0.8vmin 0 rgba(91, 58, 41, 0.12);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  width: 100%;
+  background: var(--green);
+  border-radius: 5vmin;
+  transition: width 0.25s linear, background-color 0.5s;
+}
+
+.runner {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  font-size: 11vmin;
+  line-height: 1;
+  transform: translate(-50%, -54%);
+  transition: left 0.25s linear;
+}
+
+.runner span {
+  display: inline-block;
+  transform: scaleX(-1);
+  animation: hop 0.6s ease-in-out infinite;
+}
+
+.paused-state .runner span { animation-play-state: paused; }
+
+.stars {
+  display: flex;
+  justify-content: center;
+  gap: 1.2vmin;
+}
+
+.star {
+  font-size: 6.4vmin;
+  line-height: 1;
+  transition: opacity 0.4s, filter 0.4s, transform 0.4s;
+}
+
+.star.off {
+  opacity: 0.22;
+  filter: grayscale(1);
+  transform: scale(0.8);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4vmin;
+}
+
+/* ---------- Écran de fin ---------- */
+
+#screen-done { animation: partybg 2s ease-in-out infinite; }
+
+.done-title { font-size: 12vmin; }
+.done-message { font-size: 6.5vmin; max-width: 90vw; line-height: 1.2; }
+
+/* ---------- Réglages parents ---------- */
+
+.settings {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(91, 58, 41, 0.45);
+}
+
+.panel {
+  width: 88vmin;
+  max-width: 92vw;
+  padding: 5vmin;
+  background: #fffaf0;
+  border-radius: 6vmin;
+  text-align: center;
+}
+
+.panel h2 { font-size: 5.5vmin; margin-bottom: 3vmin; }
+
+.field-label { display: block; margin: 3vmin 0 1.5vmin; font-size: 3.6vmin; }
+
+.mascot-picker { display: flex; flex-wrap: wrap; justify-content: center; gap: 2vmin; }
+
+.mascot-picker button {
+  width: 12vmin;
+  height: 12vmin;
+  border-radius: 50%;
+  background: #fff;
+  font-size: 7vmin;
+  line-height: 1;
+  box-shadow: 0 0.8vmin 0 var(--edge);
+}
+
+.mascot-picker button.selected { background: var(--yellow); outline: 1vmin solid var(--ink); }
+
+#messageInput {
+  width: 100%;
+  padding: 2vmin 3vmin;
+  border: 0.6vmin solid var(--edge);
+  border-radius: 3vmin;
+  font: inherit;
+  font-size: 4.4vmin;
+  color: var(--ink);
+  text-align: center;
+  background: #fff;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.panel .btn { margin-top: 4vmin; }
+
+/* ---------- Animations ---------- */
+
+@keyframes hop { 0%, 100% { transform: translateY(0) scaleX(-1); } 50% { transform: translateY(-1.2vmin) scaleX(-1); } }
+@keyframes dance {
+  0%, 100% { transform: rotate(-9deg) translateY(0); }
+  50% { transform: rotate(9deg) translateY(-2.5vmin); }
+}
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+@keyframes blink { 50% { opacity: 0.3; } }
+@keyframes partybg {
+  0%, 100% { background: linear-gradient(160deg, #d9f5dd, #fff1d6); }
+  50% { background: linear-gradient(160deg, #ffe0ee, #dcecff); }
+}
+
+/* ---------- Paysage : tout tient sur 768 px de haut ---------- */
+
+@media (orientation: landscape) {
+  .screen { gap: 2.4vmin; }
+  h1 { font-size: 6vmin; }
+  .brand { font-size: 10vmin; }
+  .mascot.huge { font-size: 26vmin; }
+  .presets { width: 112vmin; gap: 2.4vmin; }
+  .btn.round { width: 15vmin; height: 15vmin; font-size: 7vmin; }
+  .btn.round small { font-size: 2.8vmin; }
+  .btn.round.small { width: 11vmin; height: 11vmin; font-size: 8vmin; }
+  .btn.start { font-size: 7vmin; padding: 2vmin 8vmin; }
+  .stepper-value { font-size: 8.5vmin; }
+  .time { font-size: 27vmin; }
+  .track { height: 9vmin; border-radius: 4.5vmin; }
+  .fill { border-radius: 4.5vmin; }
+  .runner { font-size: 10vmin; }
+  .home { font-size: 10vmin; }
+  .done-title { font-size: 11vmin; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .runner span { animation: none; }
+}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Petit Timer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Petit Timer">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#fff1d6">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="icon" href="icon-180.png">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 1. Réglage -->
+  <section id="screen-setup" class="screen active">
+    <div id="gearHint" class="hint" hidden>Réglages parents : maintiens appuyé sur ⚙️</div>
+    <button id="settingsBtn" class="hold gear" type="button" aria-label="Réglages parents (maintenir appuyé)">⚙️</button>
+
+    <div class="brand">Petit Timer</div>
+    <h1>Combien de temps ?</h1>
+
+    <div id="presets" class="presets"></div>
+
+    <div class="stepper">
+      <button id="minus" class="btn round small" type="button" aria-label="Moins une minute">−</button>
+      <div class="stepper-value"><span id="minutesValue">5</span> <small>min</small></div>
+      <button id="plus" class="btn round small" type="button" aria-label="Plus une minute">+</button>
+    </div>
+
+    <button id="startBtn" class="btn start" type="button">▶ Démarrer</button>
+  </section>
+
+  <!-- 2. Décompte -->
+  <section id="screen-run" class="screen">
+    <div id="time" class="time">05:00</div>
+
+    <div class="road">
+      <div class="home" aria-hidden="true">🏠</div>
+      <div class="lane">
+        <div class="track"><div id="fill" class="fill"></div></div>
+        <div id="runner" class="runner" aria-hidden="true"><span id="runnerEmoji">🐻</span></div>
+      </div>
+    </div>
+
+    <div id="stars" class="stars" aria-hidden="true"></div>
+
+    <div class="controls">
+      <button id="pauseBtn" class="btn pause" type="button">⏸ Pause</button>
+      <button id="cancelBtn" class="btn cancel hold" type="button"><span class="label">✖ Maintenir pour arrêter</span></button>
+    </div>
+  </section>
+
+  <!-- 3. Fin -->
+  <section id="screen-done" class="screen">
+    <div id="doneMascot" class="mascot huge" aria-hidden="true">🐻</div>
+    <h1 class="done-title">C'est fini !</h1>
+    <p id="doneMessage" class="done-message"></p>
+    <div class="controls">
+      <button id="okBtn" class="btn start" type="button">👍 OK</button>
+      <button id="againBtn" class="btn again" type="button">↻ Encore</button>
+    </div>
+  </section>
+
+  <!-- Réglages parent -->
+  <div id="settings" class="settings" hidden>
+    <div class="panel">
+      <h2>Réglages parents</h2>
+
+      <label class="field-label">Mon compagnon</label>
+      <div id="mascotPicker" class="mascot-picker"></div>
+
+      <label class="field-label" for="messageInput">Message de fin</label>
+      <input id="messageInput" type="text" maxlength="60" autocomplete="off" placeholder="Le temps est écoulé !">
+
+      <button id="closeSettings" class="btn start small" type="button">✔ Terminé</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

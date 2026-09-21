@@ -1,0 +1,13 @@
+{
+  "name": "Petit Timer",
+  "short_name": "Petit Timer",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fff1d6",
+  "theme_color": "#fff1d6",
+  "lang": "fr",
+  "icons": [
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}
