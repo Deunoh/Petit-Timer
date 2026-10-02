@@ -11,6 +11,7 @@
   var WARN_MS = 60 * 1000;
   var DEFAULT_MESSAGE = 'Le temps est écoulé !';
   var OLD_DEFAULT_MESSAGE = 'On éteint les dessins animés';
+  var VOICE_MONKEY_URL = 'https://api-v3.voicemonkey.io/trigger';
 
   function $(id) { return document.getElementById(id); }
 
@@ -35,6 +36,10 @@
   var mascot = load('mascot', MASCOTS[0]);
   var message = load('message', DEFAULT_MESSAGE);
   if (message === OLD_DEFAULT_MESSAGE) { message = DEFAULT_MESSAGE; }
+  // Le token reste sur l'appareil (localStorage), jamais dans le dépôt.
+  var tvEnabled = load('tvEnabled', '0') === '1';
+  var tvToken = load('tvToken', '');
+  var tvDevice = load('tvDevice', '');
 
   // ?test=10 lance des timers de 10 secondes (pratique pour vérifier).
   var testSeconds = parseInt((/[?&]test=(\d+)/.exec(window.location.search) || [])[1], 10) || 0;
@@ -64,7 +69,12 @@
     doneMessage: $('doneMessage'),
     settings: $('settings'),
     mascotPicker: $('mascotPicker'),
-    messageInput: $('messageInput')
+    messageInput: $('messageInput'),
+    tvToggle: $('tvToggle'),
+    tvFields: $('tvFields'),
+    tvToken: $('tvToken'),
+    tvDevice: $('tvDevice'),
+    tvStatus: $('tvStatus')
   };
 
   function clamp(value) {
@@ -132,6 +142,23 @@
       window.clearInterval(ringHandle);
       ringHandle = null;
     }
+  }
+
+  /* ---------- Éteindre la TV (Voice Monkey → routine Alexa) ---------- */
+
+  // Voice Monkey déclenche une routine Alexa quand on appelle son URL.
+  // Mode no-cors : on ne lit pas la réponse, on envoie juste la requête.
+  function triggerTv(token, device) {
+    if (!token || !device || !window.fetch) { return null; }
+    var url = VOICE_MONKEY_URL + '?token=' + encodeURIComponent(token) +
+      '&device=' + encodeURIComponent(device);
+    return window.fetch(url, { mode: 'no-cors', cache: 'no-store' });
+  }
+
+  function turnOffTv() {
+    if (!tvEnabled) { return; }
+    var request = triggerTv(tvToken, tvDevice);
+    if (request) { request.catch(function () { /* pas de réseau : tant pis */ }); }
   }
 
   /* ---------- Écran toujours allumé ---------- */
@@ -321,6 +348,7 @@
     els.doneMessage.textContent = message;
     show('done');
     startRinging();
+    turnOffTv();
   }
 
   function backToSetup() {
@@ -361,13 +389,40 @@
   function openSettings() {
     els.messageInput.value = message;
     renderMascotPicker();
+    els.tvToggle.checked = tvEnabled;
+    els.tvToken.value = tvToken;
+    els.tvDevice.value = tvDevice;
+    els.tvFields.hidden = !tvEnabled;
+    els.tvStatus.textContent = '';
     els.settings.hidden = false;
   }
 
+  function trim(text) { return text.replace(/^\s+|\s+$/g, ''); }
+
   function closeSettings() {
-    message = els.messageInput.value.replace(/^\s+|\s+$/g, '') || DEFAULT_MESSAGE;
+    message = trim(els.messageInput.value) || DEFAULT_MESSAGE;
     save('message', message);
+    tvToken = trim(els.tvToken.value);
+    tvDevice = trim(els.tvDevice.value);
+    tvEnabled = els.tvToggle.checked && tvToken !== '' && tvDevice !== '';
+    save('tvEnabled', tvEnabled ? '1' : '0');
+    save('tvToken', tvToken);
+    save('tvDevice', tvDevice);
     els.settings.hidden = true;
+  }
+
+  function testTv() {
+    var request = triggerTv(trim(els.tvToken.value), trim(els.tvDevice.value));
+    if (!request) {
+      els.tvStatus.textContent = 'Remplis le token et l\'ID de l\'appareil.';
+      return;
+    }
+    els.tvStatus.textContent = 'Envoi…';
+    request.then(function () {
+      els.tvStatus.textContent = 'Envoyé ! La TV devrait s\'éteindre.';
+    }, function () {
+      els.tvStatus.textContent = 'Échec de l\'envoi (pas de réseau ?).';
+    });
   }
 
   /* ---------- Branchements ---------- */
@@ -384,6 +439,10 @@
   $('okBtn').addEventListener('click', backToSetup);
   $('againBtn').addEventListener('click', again);
   $('closeSettings').addEventListener('click', closeSettings);
+  $('tvTest').addEventListener('click', testTv);
+  els.tvToggle.addEventListener('change', function () {
+    els.tvFields.hidden = !els.tvToggle.checked;
+  });
 
   onHold($('cancelBtn'), 900, cancelTimer);
   var hintHandle = null;

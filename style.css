@@ -321,6 +321,8 @@ h1 { font-size: 7vmin; line-height: 1.1; }
   max-width: 92vw;
   padding: 5vmin;
   background: #fffaf0;
+  max-height: 92vh;
+  overflow-y: auto;
   border-radius: 6vmin;
   text-align: center;
 }
@@ -343,7 +345,8 @@ h1 { font-size: 7vmin; line-height: 1.1; }
 
 .mascot-picker button.selected { background: var(--yellow); outline: 1vmin solid var(--ink); }
 
-#messageInput {
+#messageInput,
+.text-input {
   width: 100%;
   padding: 2vmin 3vmin;
   border: 0.6vmin solid var(--edge);
@@ -358,6 +361,23 @@ h1 { font-size: 7vmin; line-height: 1.1; }
 }
 
 .panel .btn { margin-top: 4vmin; }
+
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2vmin;
+  margin-top: 4vmin;
+  font-size: 3.8vmin;
+}
+
+.toggle input { width: 5vmin; height: 5vmin; accent-color: var(--ink); }
+
+.tv-fields .text-input { margin-top: 2vmin; font-size: 3.6vmin; }
+
+.panel .btn.small-btn { margin-top: 2.5vmin; padding: 1.5vmin 4vmin; font-size: 3.6vmin; }
+
+.tv-status { min-height: 4vmin; margin-top: 1.5vmin; font-size: 3.2vmin; }
 
 /* ---------- Animations ---------- */
 
