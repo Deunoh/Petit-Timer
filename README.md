@@ -36,7 +36,19 @@ Tout fichier statique convient aussi : n'importe quel hébergement, ou un dossie
 - **Fin** : écran de fête, message et mélodie douce en boucle jusqu'à **OK**. **Encore** relance la même durée.
 - **Réglages parents** : appui long (0,8 s) sur ⚙️ en haut à droite : choix du compagnon 🐻🐰🐱🐢🦊🐼 et du message de fin.
 
-Les réglages (durée, compagnon, message) sont mémorisés sur l'iPad.
+Les réglages (durée, compagnon, message, TV) sont mémorisés sur l'iPad.
+
+## Éteindre la TV à la fin (Alexa)
+
+L'app peut éteindre une TV pilotée par Alexa quand le timer se termine, en passant par [Voice Monkey](https://voicemonkey.io), un service gratuit qui déclenche une routine Alexa quand on appelle une URL.
+
+1. Créer un compte sur [app.voicemonkey.io](https://app.voicemonkey.io) avec le même compte Amazon que l'Echo, puis activer la skill **Voice Monkey** dans l'app Alexa.
+2. Dans la console Voice Monkey, créer un appareil de type **Routine Trigger** (ex. « Éteindre TV ») et noter son **ID**.
+3. Dans la console, créer un **token** (menu *Tokens*).
+4. Dans l'app Alexa → **Routines** → **+** : *Quand* → *Maison connectée* → l'appareil Voice Monkey créé ; *Action* → *Maison connectée* → la TV → **Éteindre**.
+5. Dans Petit Timer, réglages parents → cocher **📺 Éteindre la TV à la fin**, coller le token et l'ID, puis **Tester maintenant**.
+
+Le token reste uniquement sur l'iPad (stockage local) : il n'est jamais dans le code ni sur GitHub.
 
 ## Tester rapidement
 

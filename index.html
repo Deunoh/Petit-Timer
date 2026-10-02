@@ -77,6 +77,18 @@
       <label class="field-label" for="messageInput">Message de fin</label>
       <input id="messageInput" type="text" maxlength="60" autocomplete="off" placeholder="Le temps est écoulé !">
 
+      <label class="toggle">
+        <input id="tvToggle" type="checkbox">
+        <span>📺 Éteindre la TV à la fin</span>
+      </label>
+
+      <div id="tvFields" class="tv-fields" hidden>
+        <input id="tvToken" class="text-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Token Voice Monkey">
+        <input id="tvDevice" class="text-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ID de l'appareil Voice Monkey">
+        <button id="tvTest" class="btn small-btn" type="button">Tester maintenant</button>
+        <p id="tvStatus" class="tv-status"></p>
+      </div>
+
       <button id="closeSettings" class="btn start small" type="button">✔ Terminé</button>
     </div>
   </div>
